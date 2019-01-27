@@ -10,8 +10,9 @@ def smoothing():
 	cap = cv2.VideoCapture(0)
 	while(True):
 	    _, frame = cap.read()
-	    blurred = cv2.GaussianBlur(frame,(5,5),2)
-	    cv2.imshow('frame', blurred)
+	    blurred = cv2.GaussianBlur(frame,(9,9),0)
+	    cv2.imshow('frame', frame)
+	    cv2.imshow('blurred', blurred)
 	    if cv2.waitKey(1) & 0xFF == ord('q'):
 	        break
 	cap.release()
@@ -32,7 +33,8 @@ def threshold():
 	    thresh = cv2.getTrackbarPos('type', 'Thresholds')
 	    value = cv2.getTrackbarPos('value', 'Thresholds')
 	    _, mask = cv2.threshold(gray, value, 255, thresh)
-	    cv2.imshow('frame', mask)
+	    cv2.imshow('frame', frame)
+	    cv2.imshow('mask', mask)
 	    if cv2.waitKey(1) & 0xFF == ord('q'):
 	        break
 	cap.release()
@@ -60,13 +62,14 @@ def filter():
 		low_limit = np.array([low_H,low_S,low_V])
 		high_limit = np.array([high_H,high_S,high_V])
 		mask = cv2.inRange(hsv, low_limit, high_limit)
+		cv2.imshow('frame', frame)
 		cv2.imshow('mask', mask)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
 	cap.release()
 	cv2.destroyAllWindows()
 
-#Bitwise AND
+# Bitwise AND
 def bitwise():
 	cap = cv2.VideoCapture(0)
 	cv2.namedWindow('HSV')
@@ -89,6 +92,7 @@ def bitwise():
 		high_limit = np.array([high_H,high_S,high_V])
 		mask = cv2.inRange(hsv, low_limit, high_limit)
 		blurred = cv2.GaussianBlur(mask,(5,5),2)
+		cv2.imshow('frame', frame)
 		cv2.imshow('mask', blurred)
 		bit = cv2.bitwise_and(frame, frame, mask = blurred)
 		cv2.imshow('bitwise', bit)
@@ -97,11 +101,25 @@ def bitwise():
 	cap.release()
 	cv2.destroyAllWindows()
 
+# Gaussian Blurring
+def canny():
+	cap = cv2.VideoCapture(0)
+	while(True):
+	    _, frame = cap.read()
+	    blurred = cv2.Canny(frame,50,100)
+	    cv2.imshow('frame', frame)
+	    cv2.imshow('blurred', blurred)
+	    if cv2.waitKey(1) & 0xFF == ord('q'):
+	        break
+	cap.release()
+	cv2.destroyAllWindows()
+
 def main():
-	smoothing()
-	threshold()
-	filter()
-	bitwise()
+	#smoothing()
+	#threshold()
+	#filter()
+	#bitwise()
+	canny()
 
 if __name__ == '__main__':
 	main()
